@@ -22,11 +22,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const value = useMemo<AuthCtx>(() => ({
     user,
     async login(email, password) {
-      const u = Auth.login({ email, password });
+      const { user: u } = await Auth.login({ email, password });
       setUser(u);
     },
     async signup(name, email, password) {
-      const u = Auth.signup({ name, email, password });
+      const { user: u } = await Auth.signup({ name, email, password });
       setUser(u);
     },
     logout() {
