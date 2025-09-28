@@ -5,6 +5,7 @@ import { getAllProducts } from "@/api/products";
 import { createOrder } from "@/api/orders";
 import type { ShippingAddress } from "@/api/types";
 import { useNavigate } from "react-router-dom";
+import { getToken } from "@/api/auth";
 
 export default function CheckoutPage() {
   const { items, clear } = useCart();
@@ -15,7 +16,7 @@ export default function CheckoutPage() {
   const map = new Map(products.map((p) => [p.id, p]));
   const total = items.reduce((a, i) => a + (map.get(i.productId)?.price || 0) * i.quantity, 0);
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const shipping: ShippingAddress = {
@@ -26,8 +27,9 @@ export default function CheckoutPage() {
       postalCode: String(data.get("postalCode")||""),
       country: String(data.get("country")||""),
     };
-    const order = createOrder({ userId: user?.id, items, total, shipping });
-    clear();
+    const token = getToken() || "";
+    const order = await createOrder({ items, shipping, token });
+    await clear();
     navigate(`/order/success/${order.id}`);
   }
 
