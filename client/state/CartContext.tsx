@@ -5,9 +5,9 @@ import type { CartItem } from "@/api/types";
 interface CartCtx {
   items: CartItem[];
   count: number;
-  add: (productId: string, quantity?: number, selectedAttributes?: Record<string, string>) => Promise<void>;
-  update: (productId: string, quantity: number) => Promise<void>;
-  remove: (productId: string) => Promise<void>;
+  add: (productId: string | number, quantity?: number, selectedAttributes?: Record<string, string>) => Promise<void>;
+  update: (productId: string | number, quantity: number) => Promise<void>;
+  remove: (productId: string | number) => Promise<void>;
   clear: () => Promise<void>;
 }
 
@@ -25,26 +25,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     fetchCart();
   }, []);
 
-  const add = async (productId: string, quantity = 1, selectedAttributes: Record<string, string> = {}) => {
-    const cart = await CartApi.addToCart(productId, quantity, selectedAttributes);
+  const add = async (productId: string | number, quantity = 1, selectedAttributes: Record<string, string> = {}) => {
+    const cart = await CartApi.addToCart(String(productId), quantity, selectedAttributes);
     setItems(cart.items);
   };
 
-  const update = async (productId: string, quantity: number) => {
-    // You can add an updateQuantity API if backend supports it
-    const cart = await CartApi.addToCart(productId, quantity); // fallback to add endpoint
+  const update = async (productId: string | number, quantity: number) => {
+    const cart = await CartApi.addToCart(String(productId), quantity);
     setItems(cart.items);
   };
 
-  const remove = async (productId: string) => {
-    const cart = await CartApi.removeFromCart(productId);
+  const remove = async (productId: string | number) => {
+    const cart = await CartApi.removeFromCart(String(productId));
     setItems(cart.items);
   };
 
   const clear = async () => {
-    const cart = await CartApi.clearCart?.(); // if you implement clear in backend
-    if (cart) setItems(cart.items);
-    else setItems([]);
+    const cart = await CartApi.clearCart();
+    setItems(cart.items);
   };
 
   const value = useMemo<CartCtx>(() => ({
