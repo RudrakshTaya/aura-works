@@ -5,16 +5,15 @@ import { useQuery } from "@tanstack/react-query";
 import { getAllProducts } from "@/api/products";
 import { Link } from "react-router-dom";
 import { useState } from "react";
+import { getToken } from "@/api/auth";
 
 export default function ProfilePage() {
-  const token = localStorage.getItem("auth_token");
   const { user, update } = useAuth();
-  console.log(user)
   const [tab, setTab] = useState<"orders"|"wishlist"|"sellers"|"edit">("orders");
   const { ids, toggle } = useWishlist();
   const { data: products = [] } = useQuery({ queryKey: ["products"], queryFn: getAllProducts });
   const wishes = products.filter((p)=>ids.includes(p.id));
-  const orders = listOrders(token);
+  const { data: orders = [] } = useQuery({ queryKey: ["orders"], queryFn: () => listOrders(getToken() || "") });
 
   if (!user) return <div className="container mx-auto px-4 py-10">Please <Link to="/login" className="underline">log in</Link> to view your profile.</div>;
 
@@ -39,7 +38,7 @@ export default function ProfilePage() {
 
       {tab === 'orders' && (
         <div className="mt-6 space-y-3">
-          {orders?.length ? orders.map((o)=> (
+          {orders.length ? orders.map((o)=> (
             <div key={o.id} className="rounded-xl bg-card ring-1 ring-border/60 p-4 flex items-center justify-between">
               <div>
                 <div className="font-medium">Order #{o.id}</div>
