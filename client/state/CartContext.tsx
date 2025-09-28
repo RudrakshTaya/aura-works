@@ -1,5 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
 import * as CartApi from "@/api/cart";
 import type { CartItem } from "@/api/types";
 
@@ -17,38 +16,62 @@ const Ctx = createContext<CartCtx | undefined>(undefined);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
 
-  // Fetch cart on mount
   useEffect(() => {
+    let mounted = true;
     async function fetchCart() {
-      const cart = await CartApi.getCart();
-      setItems(cart.items);
+      try {
+        const cart = await CartApi.getCart();
+        if (!mounted) return;
+        setItems(cart.items || []);
+      } catch (err) {
+        console.error("Failed to load cart:", err);
+        if (mounted) setItems([]);
+      }
     }
     fetchCart();
+    return () => { mounted = false; };
   }, []);
 
   const add = async (productId: string | number, quantity = 1, selectedAttributes: Record<string, string> = {}) => {
-    const cart = await CartApi.addToCart(String(productId), quantity, selectedAttributes);
-    setItems(cart.items);
+    try {
+      const cart = await CartApi.addToCart(String(productId), quantity, selectedAttributes);
+      setItems(cart.items || []);
+    } catch (err) {
+      console.error("Failed to add to cart:", err);
+    }
   };
 
   const update = async (productId: string | number, quantity: number) => {
-    const cart = await CartApi.addToCart(String(productId), quantity);
-    setItems(cart.items);
+    try {
+      const cart = await CartApi.addToCart(String(productId), quantity);
+      setItems(cart.items || []);
+    } catch (err) {
+      console.error("Failed to update cart:", err);
+    }
   };
 
   const remove = async (productId: string | number) => {
-    const cart = await CartApi.removeFromCart(String(productId));
-    setItems(cart.items);
+    try {
+      const cart = await CartApi.removeFromCart(String(productId));
+      setItems(cart.items || []);
+    } catch (err) {
+      console.error("Failed to remove from cart:", err);
+    }
   };
 
   const clear = async () => {
-    const cart = await CartApi.clearCart();
-    setItems(cart.items);
+    try {
+      const cart = await CartApi.clearCart();
+      setItems(cart.items || []);
+    } catch (err) {
+      console.error("Failed to clear cart:", err);
+      setItems([]);
+    }
   };
 
   const value = useMemo<CartCtx>(() => ({
     items,
-    count: items.reduce((a, i) => a + i.quantity, 0),
+    count: items.reduce((a, i) => a + (i.quantity || 0), 0),
     add,
     update,
     remove,
