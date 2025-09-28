@@ -1,4 +1,5 @@
 import { useWishlist } from "@/state/WishlistContext";
+import { useWishlist } from "@/state/WishlistContext";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProducts } from "@/api/products";
 import ProductCard from "@/components/ProductCard";
