@@ -4,7 +4,7 @@ import { getToken } from "@/api/auth";
 
 type WishlistContextType = {
   ids: number[];
-  toggle: (id: number) => Promise<void>;
+  toggle: (id: number | string) => Promise<void>;
 };
 
 const WishlistContext = createContext<WishlistContextType>({
