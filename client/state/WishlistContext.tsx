@@ -28,15 +28,17 @@ export const WishlistProvider = ({ children }: { children: React.ReactNode }) =>
     fetchWishlist();
   }, []);
 
-  const toggle = async (productId: number) => {
+  const toggle = async (productId: number | string) => {
     try {
       if (!getToken()) return;
-      if (ids.includes(productId)) {
-        await removeFromWishlist(productId);
-        setIds((prev) => prev.filter((id) => id !== productId));
+      const id = typeof productId === 'string' ? Number(productId) : productId;
+      if (!Number.isFinite(id)) return;
+      if (ids.includes(id)) {
+        await removeFromWishlist(id);
+        setIds((prev) => prev.filter((i) => i !== id));
       } else {
-        await addToWishlist(productId);
-        setIds((prev) => [...prev, productId]);
+        await addToWishlist(id);
+        setIds((prev) => [...prev, id]);
       }
     } catch (err) {
       console.error("Failed to update wishlist:", err);
