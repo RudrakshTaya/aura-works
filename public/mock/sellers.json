@@ -1,0 +1,8 @@
+[
+  {"id":"s1","name":"Luna Atelier","avatar":"https://i.pravatar.cc/120?img=5","rating":4.9,"bio":"Hand-painted abstracts and dreamy landscapes.","location":"Austin, TX"},
+  {"id":"s2","name":"Crafted by Noor","avatar":"https://i.pravatar.cc/120?img=15","rating":4.8,"bio":"Eco-friendly crafts and artisanal decor.","location":"Seattle, WA"},
+  {"id":"s3","name":"Pixel Muse","avatar":"https://i.pravatar.cc/120?img=20","rating":4.7,"bio":"Vibrant digital illustrations and posters.","location":"Brooklyn, NY"},
+  {"id":"s4","name":"Indigo Studio","avatar":"https://i.pravatar.cc/120?img=30","rating":4.6,"bio":"Modern calligraphy and custom prints.","location":"San Diego, CA"},
+  {"id":"s5","name":"The DIY Den","avatar":"https://i.pravatar.cc/120?img=47","rating":4.5,"bio":"DIY kits and handmade gifts.","location":"Portland, OR"},
+  {"id":"s6","name":"Canvas & Clay","avatar":"https://i.pravatar.cc/120?img=56","rating":4.8,"bio":"Original paintings and ceramic art.","location":"Denver, CO"}
+]
