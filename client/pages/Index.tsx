@@ -5,6 +5,7 @@ import ProductCard from "@/components/ProductCard";
 import SellerCard from "@/components/SellerCard";
 import CategoryPill from "@/components/CategoryPill";
 import { Link } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Index() {
   const { data: products = [], isLoading } = useQuery({ queryKey: ["home-products"], queryFn: getAllProducts });
