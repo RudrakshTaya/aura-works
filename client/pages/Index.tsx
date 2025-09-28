@@ -93,7 +93,7 @@ function ProductGrid({ loading, products }: { loading: boolean; products: any[] 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {products.filter(Boolean).map((p, idx) => (
-        <ProductCard key={p?.id ?? `${p?.title ?? 'prod'}-${idx}`} product={p} />
+        <ProductCard key={`${p?.id ?? 'prod'}-${idx}`} product={p as any} />
       ))}
     </div>
   );
