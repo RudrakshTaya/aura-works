@@ -90,11 +90,27 @@ function ProductGrid({ loading, products }: { loading: boolean; products: any[] 
     );
   }
 
-  return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-      {products.filter((p)=> p && typeof p === 'object').map((p, idx) => (
-        <ProductCard key={`${(p as any).id ?? 'prod'}-${idx}`} product={p as any} />
-      ))}
-    </div>
-  );
+  try {
+    const rows = Array.isArray(products) ? products : [];
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {rows.map((p, idx) => {
+          if (!p || typeof p !== 'object') {
+            return <div key={`placeholder-${idx}`} className="rounded-xl bg-muted/60 h-64" />;
+          }
+          const id = (p as any).id ?? `prod-${idx}`;
+          return <ProductCard key={`${id}-${idx}`} product={p as any} />;
+        })}
+      </div>
+    );
+  } catch (err) {
+    console.error("ProductGrid render error:", err, products);
+    return (
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+        {Array.from({length:8}).map((_,i)=> (
+          <div key={i} className="rounded-xl bg-muted/60 h-64" />
+        ))}
+      </div>
+    );
+  }
 }
