@@ -1,5 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import { addToWishlist, removeFromWishlist, getWishlist } from "@/api/wishlist";
+import { getToken } from "@/api/auth";
 
 type WishlistContextType = {
   ids: number[];
@@ -13,11 +14,12 @@ const WishlistContext = createContext<WishlistContextType>({
 
 export const WishlistProvider = ({ children }: { children: React.ReactNode }) => {
   const [ids, setIds] = useState<number[]>([]);
-const token = localStorage.getItem("auth_token");
+
   useEffect(() => {
     async function fetchWishlist() {
       try {
-        const list = await getWishlist(token); // real API returns number[]
+        if (!getToken()) { setIds([]); return; }
+        const list = await getWishlist();
         setIds(Array.isArray(list) ? list : []);
       } catch {
         setIds([]);
@@ -28,11 +30,12 @@ const token = localStorage.getItem("auth_token");
 
   const toggle = async (productId: number) => {
     try {
+      if (!getToken()) return;
       if (ids.includes(productId)) {
-        await removeFromWishlist(productId,token);
+        await removeFromWishlist(productId);
         setIds((prev) => prev.filter((id) => id !== productId));
       } else {
-        await addToWishlist(productId,token);
+        await addToWishlist(productId);
         setIds((prev) => [...prev, productId]);
       }
     } catch (err) {
