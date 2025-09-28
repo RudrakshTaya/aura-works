@@ -3,11 +3,18 @@ import { http, unwrap } from "./http";
 
 const API_BASE = "/auth"; // http has baseURL /api
 
-export async function login({ email, password }: AuthCredentials): Promise<{ user: User; token: string }> {
+export async function login({
+  email,
+  password,
+}: AuthCredentials): Promise<{ user: User; token: string }> {
   try {
-    const res = await http.post(`${API_BASE}/user/login`, { email, password }, {
-      headers: { "Content-Type": "application/json" },
-    });
+    const res = await http.post(
+      `${API_BASE}/user/login`,
+      { email, password },
+      {
+        headers: { "Content-Type": "application/json" },
+      },
+    );
     const payload = unwrap<{ token: string; user: User }>(res);
     localStorage.setItem("auth_user", JSON.stringify(payload.user));
     localStorage.setItem("auth_token", payload.token);
@@ -18,11 +25,19 @@ export async function login({ email, password }: AuthCredentials): Promise<{ use
   }
 }
 
-export async function signup({ name, email, password }: { name: string } & AuthCredentials): Promise<{ user: User; token: string }> {
+export async function signup({
+  name,
+  email,
+  password,
+}: { name: string } & AuthCredentials): Promise<{ user: User; token: string }> {
   try {
-    const res = await http.post(`${API_BASE}/user/signup`, { name, email, password }, {
-      headers: { "Content-Type": "application/json" },
-    });
+    const res = await http.post(
+      `${API_BASE}/user/signup`,
+      { name, email, password },
+      {
+        headers: { "Content-Type": "application/json" },
+      },
+    );
     const payload = unwrap<{ token: string; user: User }>(res);
     localStorage.setItem("auth_user", JSON.stringify(payload.user));
     localStorage.setItem("auth_token", payload.token);

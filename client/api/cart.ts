@@ -18,10 +18,14 @@ export async function getCart(): Promise<Cart> {
 export async function addToCart(
   productId: string,
   quantity = 1,
-  selectedAttributes: Record<string, string> = {}
+  selectedAttributes: Record<string, string> = {},
 ): Promise<Cart> {
   try {
-    const { data } = await http.post<Cart>(`${API_BASE}/add`, { productId, quantity, selectedAttributes });
+    const { data } = await http.post<Cart>(`${API_BASE}/add`, {
+      productId,
+      quantity,
+      selectedAttributes,
+    });
     return data as unknown as Cart;
   } catch (err) {
     console.error("Error adding to cart:", err);

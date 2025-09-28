@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getToken } from "@/api/auth";
 
-const steps = ["Placed","Shipped","Delivered"] as const;
+const steps = ["Placed", "Shipped", "Delivered"] as const;
 
 export default function OrderTracking() {
   const { id } = useParams();
@@ -25,10 +25,12 @@ export default function OrderTracking() {
     let idx = 0;
     if (minutes > 1) idx = 1;
     if (minutes > 3) idx = 2;
-    if (order.status !== steps[idx]) updateStatus(order.id, steps[idx], getToken() || "");
+    if (order.status !== steps[idx])
+      updateStatus(order.id, steps[idx], getToken() || "");
   }, [order]);
 
-  if (!order) return <div className="container mx-auto px-4 py-10">Loading order...</div>;
+  if (!order)
+    return <div className="container mx-auto px-4 py-10">Loading order...</div>;
 
   const placedAt = new Date(order.createdAt).toLocaleString();
 
@@ -39,13 +41,18 @@ export default function OrderTracking() {
 
       <div className="mt-8 grid grid-cols-3 gap-3">
         {steps.map((s, i) => (
-          <div key={s} className={`rounded-xl p-4 text-center ring-1 ${i <= steps.indexOf(order.status as any) ? 'bg-foreground text-background ring-foreground' : 'bg-card ring-border/60'}`}>
+          <div
+            key={s}
+            className={`rounded-xl p-4 text-center ring-1 ${i <= steps.indexOf(order.status as any) ? "bg-foreground text-background ring-foreground" : "bg-card ring-border/60"}`}
+          >
             <div className="font-medium">{s}</div>
           </div>
         ))}
       </div>
 
-      <div className="mt-6 text-sm text-muted-foreground">Status updates every minute for demo purposes.</div>
+      <div className="mt-6 text-sm text-muted-foreground">
+        Status updates every minute for demo purposes.
+      </div>
     </div>
   );
 }

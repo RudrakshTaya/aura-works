@@ -11,7 +11,10 @@ export default function ProductCard({ product }: { product: Product }) {
   const safeId = product?.id ?? "";
   const title = product?.title ?? "Untitled";
   const image = product?.image ?? "/placeholder.svg";
-  const price = typeof product?.price === "number" ? product.price : Number(product?.price) || 0;
+  const price =
+    typeof product?.price === "number"
+      ? product.price
+      : Number(product?.price) || 0;
   const rating = product?.rating?.rate ?? 4.5;
 
   // Async handler for Add to Cart
@@ -27,7 +30,10 @@ export default function ProductCard({ product }: { product: Product }) {
 
   return (
     <div className="group rounded-xl bg-card shadow-[var(--shadow-soft)] ring-1 ring-border/60 overflow-hidden hover:shadow-xl transition-shadow">
-      <Link to={`/product/${safeId}`} className="block aspect-square bg-muted/60 overflow-hidden">
+      <Link
+        to={`/product/${safeId}`}
+        className="block aspect-square bg-muted/60 overflow-hidden"
+      >
         <img
           src={image}
           alt={title}
@@ -36,7 +42,10 @@ export default function ProductCard({ product }: { product: Product }) {
         />
       </Link>
       <div className="p-4">
-        <Link to={`/product/${safeId}`} className="line-clamp-2 font-medium hover:underline">
+        <Link
+          to={`/product/${safeId}`}
+          className="line-clamp-2 font-medium hover:underline"
+        >
           {title}
         </Link>
         <div className="mt-2 flex items-center justify-between">

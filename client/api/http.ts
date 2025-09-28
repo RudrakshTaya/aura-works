@@ -1,9 +1,12 @@
 import axios from "axios";
 
 // Determine API base URL: prefer VITE_API_BASE, fallback to same-origin /api
-const baseURL = (typeof window !== "undefined" && (import.meta as any)?.env?.VITE_API_BASE)
-  ? (import.meta as any).env.VITE_API_BASE
-  : (typeof window !== "undefined" ? `${window.location.origin}/api` : "http://localhost:8080/api");
+const baseURL =
+  typeof window !== "undefined" && (import.meta as any)?.env?.VITE_API_BASE
+    ? (import.meta as any).env.VITE_API_BASE
+    : typeof window !== "undefined"
+      ? `${window.location.origin}/api`
+      : "http://localhost:8080/api";
 
 export const http = axios.create({ baseURL });
 

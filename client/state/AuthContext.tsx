@@ -19,25 +19,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUser(Auth.getCurrentUser());
   }, []);
 
-  const value = useMemo<AuthCtx>(() => ({
-    user,
-    async login(email, password) {
-      const { user: u } = await Auth.login({ email, password });
-      setUser(u);
-    },
-    async signup(name, email, password) {
-      const { user: u } = await Auth.signup({ name, email, password });
-      setUser(u);
-    },
-    logout() {
-      Auth.logout();
-      setUser(null);
-    },
-    update(patch) {
-      const u = Auth.updateProfile(patch);
-      setUser(u);
-    },
-  }), [user]);
+  const value = useMemo<AuthCtx>(
+    () => ({
+      user,
+      async login(email, password) {
+        const { user: u } = await Auth.login({ email, password });
+        setUser(u);
+      },
+      async signup(name, email, password) {
+        const { user: u } = await Auth.signup({ name, email, password });
+        setUser(u);
+      },
+      logout() {
+        Auth.logout();
+        setUser(null);
+      },
+      update(patch) {
+        const u = Auth.updateProfile(patch);
+        setUser(u);
+      },
+    }),
+    [user],
+  );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

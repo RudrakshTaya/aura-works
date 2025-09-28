@@ -12,13 +12,20 @@ const WishlistContext = createContext<WishlistContextType>({
   toggle: async () => {},
 });
 
-export const WishlistProvider = ({ children }: { children: React.ReactNode }) => {
+export const WishlistProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [ids, setIds] = useState<number[]>([]);
 
   useEffect(() => {
     async function fetchWishlist() {
       try {
-        if (!getToken()) { setIds([]); return; }
+        if (!getToken()) {
+          setIds([]);
+          return;
+        }
         const list = await getWishlist();
         setIds(Array.isArray(list) ? list : []);
       } catch {
@@ -31,7 +38,7 @@ export const WishlistProvider = ({ children }: { children: React.ReactNode }) =>
   const toggle = async (productId: number | string) => {
     try {
       if (!getToken()) return;
-      const id = typeof productId === 'string' ? Number(productId) : productId;
+      const id = typeof productId === "string" ? Number(productId) : productId;
       if (!Number.isFinite(id)) return;
       if (ids.includes(id)) {
         await removeFromWishlist(id);

@@ -28,14 +28,16 @@ export function filterProducts(
     maxPrice?: number;
     minRating?: number;
     sort?: "price_asc" | "price_desc" | "newest" | "popular";
-  } = {}
+  } = {},
 ): Product[] {
   let list = [...products];
 
   if (opts.q) {
     const q = opts.q.toLowerCase();
     list = list.filter((p) =>
-      [p.title, p.description, p.category].some((v) => v?.toLowerCase().includes(q))
+      [p.title, p.description, p.category].some((v) =>
+        v?.toLowerCase().includes(q),
+      ),
     );
   }
 
@@ -52,7 +54,9 @@ export function filterProducts(
   }
 
   if (typeof opts.minRating === "number") {
-    list = list.filter((p) => (p.rating?.rate ?? 0) >= (opts.minRating as number));
+    list = list.filter(
+      (p) => (p.rating?.rate ?? 0) >= (opts.minRating as number),
+    );
   }
 
   switch (opts.sort) {
@@ -73,7 +77,11 @@ export function filterProducts(
   return list;
 }
 
-export function getSuggestions(products: Product[], q: string, limit = 8): string[] {
+export function getSuggestions(
+  products: Product[],
+  q: string,
+  limit = 8,
+): string[] {
   if (!q) return [];
   const lower = q.toLowerCase();
   const seen = new Set<string>();

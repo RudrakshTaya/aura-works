@@ -17,7 +17,10 @@ export async function createOrder(params: {
   shipping: ShippingAddress;
   token: string;
 }): Promise<Order> {
-  const res = await http.post(`/orders`, { items: params.items, shippingAddress: params.shipping });
+  const res = await http.post(`/orders`, {
+    items: params.items,
+    shippingAddress: params.shipping,
+  });
   // Accept both 200 and 201 responses; unwrap handles envelope
   return unwrap<Order>(res);
 }
@@ -25,7 +28,7 @@ export async function createOrder(params: {
 export async function updateStatus(
   id: string,
   status: OrderStatus,
-  _token: string
+  _token: string,
 ): Promise<Order> {
   const res = await http.patch(`/orders/${id}/status`, { status });
   return unwrap<Order>(res);

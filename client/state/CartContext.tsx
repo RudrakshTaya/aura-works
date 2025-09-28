@@ -1,11 +1,21 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import * as CartApi from "@/api/cart";
 import type { CartItem } from "@/api/types";
 
 interface CartCtx {
   items: CartItem[];
   count: number;
-  add: (productId: string | number, quantity?: number, selectedAttributes?: Record<string, string>) => Promise<void>;
+  add: (
+    productId: string | number,
+    quantity?: number,
+    selectedAttributes?: Record<string, string>,
+  ) => Promise<void>;
   update: (productId: string | number, quantity: number) => Promise<void>;
   remove: (productId: string | number) => Promise<void>;
   clear: () => Promise<void>;
@@ -29,12 +39,22 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
     }
     fetchCart();
-    return () => { mounted = false; };
+    return () => {
+      mounted = false;
+    };
   }, []);
 
-  const add = async (productId: string | number, quantity = 1, selectedAttributes: Record<string, string> = {}) => {
+  const add = async (
+    productId: string | number,
+    quantity = 1,
+    selectedAttributes: Record<string, string> = {},
+  ) => {
     try {
-      const cart = await CartApi.addToCart(String(productId), quantity, selectedAttributes);
+      const cart = await CartApi.addToCart(
+        String(productId),
+        quantity,
+        selectedAttributes,
+      );
       setItems(cart.items || []);
     } catch (err) {
       console.error("Failed to add to cart:", err);
@@ -69,14 +89,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const value = useMemo<CartCtx>(() => ({
-    items,
-    count: items.reduce((a, i) => a + (i.quantity || 0), 0),
-    add,
-    update,
-    remove,
-    clear,
-  }), [items]);
+  const value = useMemo<CartCtx>(
+    () => ({
+      items,
+      count: items.reduce((a, i) => a + (i.quantity || 0), 0),
+      add,
+      update,
+      remove,
+      clear,
+    }),
+    [items],
+  );
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }
