@@ -1,9 +1,10 @@
-import { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect } from "react";
 import { addToWishlist, removeFromWishlist, getWishlist } from "@/api/wishlist";
+import { getToken } from "@/api/auth";
 
 type WishlistContextType = {
   ids: number[];
-  toggle: (id: number) => Promise<void>;
+  toggle: (id: number | string) => Promise<void>;
 };
 
 const WishlistContext = createContext<WishlistContextType>({
@@ -11,13 +12,21 @@ const WishlistContext = createContext<WishlistContextType>({
   toggle: async () => {},
 });
 
-export const WishlistProvider = ({ children }: { children: React.ReactNode }) => {
+export const WishlistProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [ids, setIds] = useState<number[]>([]);
-const token = localStorage.getItem("auth_token");
+
   useEffect(() => {
     async function fetchWishlist() {
       try {
-        const list = await getWishlist(token); // real API returns number[]
+        if (!getToken()) {
+          setIds([]);
+          return;
+        }
+        const list = await getWishlist();
         setIds(Array.isArray(list) ? list : []);
       } catch {
         setIds([]);
@@ -26,14 +35,17 @@ const token = localStorage.getItem("auth_token");
     fetchWishlist();
   }, []);
 
-  const toggle = async (productId: number) => {
+  const toggle = async (productId: number | string) => {
     try {
-      if (ids.includes(productId)) {
-        await removeFromWishlist(productId,token);
-        setIds((prev) => prev.filter((id) => id !== productId));
+      if (!getToken()) return;
+      const id = typeof productId === "string" ? Number(productId) : productId;
+      if (!Number.isFinite(id)) return;
+      if (ids.includes(id)) {
+        await removeFromWishlist(id);
+        setIds((prev) => prev.filter((i) => i !== id));
       } else {
-        await addToWishlist(productId,token);
-        setIds((prev) => [...prev, productId]);
+        await addToWishlist(id);
+        setIds((prev) => [...prev, id]);
       }
     } catch (err) {
       console.error("Failed to update wishlist:", err);

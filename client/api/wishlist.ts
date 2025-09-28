@@ -1,40 +1,23 @@
-import axios from "axios";
-
-const BASE = "http://localhost:8080/api";
+import { http, unwrap } from "./http";
 
 // Get user's wishlist
-export async function getWishlist(token: string): Promise<number[]> {
-  const res = await axios.get(`${BASE}/users/wishlist`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  if (res.status !== 200) throw new Error("Failed to fetch wishlist");
-  console.log("Wishlist response:", res.data);
-  return res.data.data ?? res.data;
+export async function getWishlist(): Promise<number[]> {
+  const res = await http.get(`/users/wishlist`);
+  return unwrap<number[]>(res);
 }
 
 // Add a product to wishlist
-export async function addToWishlist(productId: number, token: string): Promise<number[]> {
-  const res = await axios.post(
-    `${BASE}/users/wishlist/add`,
-    { productId },
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
-  if (res.status !== 200) throw new Error("Failed to add to wishlist");
-  return res.data.data ?? res.data;
+export async function addToWishlist(productId: number): Promise<number[]> {
+  const res = await http.post(`/users/wishlist/add`, { productId });
+  return unwrap<number[]>(res);
 }
 
 // Remove a product from wishlist
-export async function removeFromWishlist(productId: number, token: string): Promise<number[]> {
-  const res = await axios.post(
-    `${BASE}/users/wishlist/remove`,
-    { productId },
-    { headers: { Authorization: `Bearer ${token}` } }
-  );
-  if (res.status !== 200) throw new Error("Failed to remove from wishlist");
-  return res.data.data ?? res.data;
+export async function removeFromWishlist(productId: number): Promise<number[]> {
+  const res = await http.post(`/users/wishlist/remove`, { productId });
+  return unwrap<number[]>(res);
 }
 
-// Check if product is in wishlist
 export function inWishlist(productId: number, wishlist: number[]): boolean {
   return wishlist.includes(productId);
 }

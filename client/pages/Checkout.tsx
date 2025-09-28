@@ -5,33 +5,44 @@ import { getAllProducts } from "@/api/products";
 import { createOrder } from "@/api/orders";
 import type { ShippingAddress } from "@/api/types";
 import { useNavigate } from "react-router-dom";
+import { getToken } from "@/api/auth";
 
 export default function CheckoutPage() {
   const { items, clear } = useCart();
   const { user } = useAuth();
   const navigate = useNavigate();
-  const { data: products = [] } = useQuery({ queryKey: ["products"], queryFn: getAllProducts });
+  const { data: products = [] } = useQuery({
+    queryKey: ["products"],
+    queryFn: getAllProducts,
+  });
 
   const map = new Map(products.map((p) => [p.id, p]));
-  const total = items.reduce((a, i) => a + (map.get(i.productId)?.price || 0) * i.quantity, 0);
+  const total = items.reduce(
+    (a, i) => a + (map.get(i.productId)?.price || 0) * i.quantity,
+    0,
+  );
 
-  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
     const shipping: ShippingAddress = {
-      fullName: String(data.get("fullName")||""),
-      address: String(data.get("address")||""),
-      city: String(data.get("city")||""),
-      state: String(data.get("state")||""),
-      postalCode: String(data.get("postalCode")||""),
-      country: String(data.get("country")||""),
+      fullName: String(data.get("fullName") || ""),
+      address: String(data.get("address") || ""),
+      city: String(data.get("city") || ""),
+      state: String(data.get("state") || ""),
+      postalCode: String(data.get("postalCode") || ""),
+      country: String(data.get("country") || ""),
     };
-    const order = createOrder({ userId: user?.id, items, total, shipping });
-    clear();
+    const token = getToken() || "";
+    const order = await createOrder({ items, shipping, token });
+    await clear();
     navigate(`/order/success/${order.id}`);
   }
 
-  if (items.length === 0) return <div className="container mx-auto px-4 py-10">Your cart is empty.</div>;
+  if (items.length === 0)
+    return (
+      <div className="container mx-auto px-4 py-10">Your cart is empty.</div>
+    );
 
   return (
     <div className="container mx-auto px-4 py-10 grid gap-8 lg:grid-cols-2">
@@ -40,39 +51,83 @@ export default function CheckoutPage() {
         <form onSubmit={onSubmit} className="mt-6 space-y-4">
           <div className="grid md:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs text-muted-foreground mb-1">Full Name</label>
-              <input name="fullName" required className="w-full rounded-md bg-muted/60 px-3 py-2" />
+              <label className="block text-xs text-muted-foreground mb-1">
+                Full Name
+              </label>
+              <input
+                name="fullName"
+                required
+                className="w-full rounded-md bg-muted/60 px-3 py-2"
+              />
             </div>
             <div>
-              <label className="block text-xs text-muted-foreground mb-1">Country</label>
-              <input name="country" required className="w-full rounded-md bg-muted/60 px-3 py-2" />
+              <label className="block text-xs text-muted-foreground mb-1">
+                Country
+              </label>
+              <input
+                name="country"
+                required
+                className="w-full rounded-md bg-muted/60 px-3 py-2"
+              />
             </div>
           </div>
           <div>
-            <label className="block text-xs text-muted-foreground mb-1">Address</label>
-            <input name="address" required className="w-full rounded-md bg-muted/60 px-3 py-2" />
+            <label className="block text-xs text-muted-foreground mb-1">
+              Address
+            </label>
+            <input
+              name="address"
+              required
+              className="w-full rounded-md bg-muted/60 px-3 py-2"
+            />
           </div>
           <div className="grid md:grid-cols-3 gap-4">
             <div>
-              <label className="block text-xs text-muted-foreground mb-1">City</label>
-              <input name="city" required className="w-full rounded-md bg-muted/60 px-3 py-2" />
+              <label className="block text-xs text-muted-foreground mb-1">
+                City
+              </label>
+              <input
+                name="city"
+                required
+                className="w-full rounded-md bg-muted/60 px-3 py-2"
+              />
             </div>
             <div>
-              <label className="block text-xs text-muted-foreground mb-1">State</label>
-              <input name="state" required className="w-full rounded-md bg-muted/60 px-3 py-2" />
+              <label className="block text-xs text-muted-foreground mb-1">
+                State
+              </label>
+              <input
+                name="state"
+                required
+                className="w-full rounded-md bg-muted/60 px-3 py-2"
+              />
             </div>
             <div>
-              <label className="block text-xs text-muted-foreground mb-1">Postal Code</label>
-              <input name="postalCode" required className="w-full rounded-md bg-muted/60 px-3 py-2" />
+              <label className="block text-xs text-muted-foreground mb-1">
+                Postal Code
+              </label>
+              <input
+                name="postalCode"
+                required
+                className="w-full rounded-md bg-muted/60 px-3 py-2"
+              />
             </div>
           </div>
 
           <div className="rounded-xl bg-card ring-1 ring-border/60 p-4">
             <div className="font-medium">Payment</div>
-            <p className="text-sm text-muted-foreground">Payment will be processed with a placeholder API in production. For now, submit to place a dummy order.</p>
+            <p className="text-sm text-muted-foreground">
+              Payment will be processed with a placeholder API in production.
+              For now, submit to place a dummy order.
+            </p>
           </div>
 
-          <button type="submit" className="rounded-full bg-foreground text-background px-5 py-2.5 text-sm font-medium">Place Order</button>
+          <button
+            type="submit"
+            className="rounded-full bg-foreground text-background px-5 py-2.5 text-sm font-medium"
+          >
+            Place Order
+          </button>
         </form>
       </div>
 
@@ -81,11 +136,18 @@ export default function CheckoutPage() {
         <div className="mt-3 space-y-2 text-sm">
           {items.map((i) => (
             <div key={i.productId} className="flex justify-between">
-              <span>{map.get(i.productId)?.title} × {i.quantity}</span>
-              <span>${(((map.get(i.productId)?.price)||0) * i.quantity).toFixed(2)}</span>
+              <span>
+                {map.get(i.productId)?.title} × {i.quantity}
+              </span>
+              <span>
+                ${((map.get(i.productId)?.price || 0) * i.quantity).toFixed(2)}
+              </span>
             </div>
           ))}
-          <div className="flex justify-between font-semibold border-t pt-2 mt-2"><span>Total</span><span>${total.toFixed(2)}</span></div>
+          <div className="flex justify-between font-semibold border-t pt-2 mt-2">
+            <span>Total</span>
+            <span>${total.toFixed(2)}</span>
+          </div>
         </div>
       </aside>
     </div>

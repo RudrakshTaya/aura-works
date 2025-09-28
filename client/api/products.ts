@@ -1,27 +1,23 @@
 import type { Product } from "./types";
-import axios from "axios";
-
-const BASE = "http://localhost:8080/api";
+import { http, unwrap } from "./http";
 
 export async function getAllProducts(): Promise<Product[]> {
-  const res = await axios.get(`${BASE}/products`);
-  if (res.status !== 200) throw new Error("Failed to fetch products");
-  // Assuming your backend returns { success: true, data: Product[] }
-  return res.data.data ?? res.data; 
+  const res = await http.get(`/products`);
+  return unwrap<Product[]>(res);
 }
 
 export async function getProduct(id: number): Promise<Product> {
-  const res = await axios.get(`${BASE}/products/${id}`);
-  if (res.status !== 200) throw new Error("Failed to fetch product");
-  return res.data.data ?? res.data;
+  const res = await http.get(`/products/${id}`);
+  return unwrap<Product>(res);
 }
 
 export async function getCategories(): Promise<string[]> {
-  const res = await axios.get(`${BASE}/products/categories`);
-  if (res.status !== 200) throw new Error("Failed to fetch categories");
-  return res.data.data ?? res.data;
+  // Compute categories from products to avoid relying on a non-standard endpoint
+  const products = await getAllProducts();
+  const set = new Set<string>();
+  for (const p of products) if (p.category) set.add(p.category);
+  return Array.from(set).sort();
 }
-
 
 export function filterProducts(
   products: Product[],
@@ -32,14 +28,16 @@ export function filterProducts(
     maxPrice?: number;
     minRating?: number;
     sort?: "price_asc" | "price_desc" | "newest" | "popular";
-  } = {}
+  } = {},
 ): Product[] {
   let list = [...products];
 
   if (opts.q) {
     const q = opts.q.toLowerCase();
     list = list.filter((p) =>
-      [p.title, p.description, p.category].some((v) => v?.toLowerCase().includes(q))
+      [p.title, p.description, p.category].some((v) =>
+        v?.toLowerCase().includes(q),
+      ),
     );
   }
 
@@ -56,7 +54,9 @@ export function filterProducts(
   }
 
   if (typeof opts.minRating === "number") {
-    list = list.filter((p) => (p.rating?.rate ?? 0) >= (opts.minRating as number));
+    list = list.filter(
+      (p) => (p.rating?.rate ?? 0) >= (opts.minRating as number),
+    );
   }
 
   switch (opts.sort) {
@@ -77,7 +77,11 @@ export function filterProducts(
   return list;
 }
 
-export function getSuggestions(products: Product[], q: string, limit = 8): string[] {
+export function getSuggestions(
+  products: Product[],
+  q: string,
+  limit = 8,
+): string[] {
   if (!q) return [];
   const lower = q.toLowerCase();
   const seen = new Set<string>();
