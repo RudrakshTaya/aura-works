@@ -12,7 +12,7 @@ http.interceptors.request.use((config) => {
   try {
     const token = localStorage.getItem("auth_token");
     if (token && token !== "undefined") {
-      config.headers = config.headers || {};
+      if (!config.headers) (config as any).headers = {};
       (config.headers as any).Authorization = `Bearer ${token}`;
     }
   } catch {}
