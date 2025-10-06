@@ -24,7 +24,9 @@ export default function ProductDetail() {
     return <div className="container mx-auto px-4 py-10">Loading…</div>;
   if (error || !data)
     return (
-      <div className="container mx-auto px-4 py-10">Failed to load product.</div>
+      <div className="container mx-auto px-4 py-10">
+        Failed to load product.
+      </div>
     );
 
   const wished = Array.isArray(ids) ? ids.includes(productId) : false;
@@ -54,12 +56,20 @@ export default function ProductDetail() {
   return (
     <div className="container mx-auto px-4 py-10 grid gap-8 md:grid-cols-2">
       <div className="rounded-2xl bg-card ring-1 ring-border/60 p-6">
-        <img src={image} alt={data.name} className="w-full h-auto object-contain" />
+        <img
+          src={image}
+          alt={data.name}
+          className="w-full h-auto object-contain"
+        />
       </div>
       <div>
         <h1 className="text-2xl md:text-3xl font-semibold">{data.name}</h1>
-        <div className="mt-2 text-lg font-semibold">${data.price.toFixed(2)}</div>
-        <div className="mt-2 text-sm text-muted-foreground">⭐ {rating.toFixed(1)}</div>
+        <div className="mt-2 text-lg font-semibold">
+          ${data.price.toFixed(2)}
+        </div>
+        <div className="mt-2 text-sm text-muted-foreground">
+          ⭐ {rating.toFixed(1)}
+        </div>
         <p className="mt-4 max-w-prose">{data.description}</p>
         <div className="mt-6 flex items-center gap-3">
           <button

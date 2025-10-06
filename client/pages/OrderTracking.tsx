@@ -21,7 +21,9 @@ export default function OrderTracking() {
   if (!order)
     return <div className="container mx-auto px-4 py-10">Loading order...</div>;
 
-  const placedAt = new Date(order.orderedAt || order.updatedAt || Date.now()).toLocaleString();
+  const placedAt = new Date(
+    order.orderedAt || order.updatedAt || Date.now(),
+  ).toLocaleString();
   const currentIndex = Math.max(0, steps.indexOf(order.status as OrderStatus));
 
   return (
@@ -40,7 +42,9 @@ export default function OrderTracking() {
         ))}
       </div>
 
-      <div className="mt-6 text-sm text-muted-foreground">Status refreshes every minute.</div>
+      <div className="mt-6 text-sm text-muted-foreground">
+        Status refreshes every minute.
+      </div>
     </div>
   );
 }

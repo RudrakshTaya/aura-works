@@ -29,9 +29,13 @@ export default function Index() {
       <section className="container mx-auto px-4 pt-10 pb-16 md:pt-16">
         <div className="grid md:grid-cols-2 gap-8 items-center">
           <div>
-            <h1 className="text-4xl md:text-5xl font-semibold leading-tight">Discover Local Creativity</h1>
+            <h1 className="text-4xl md:text-5xl font-semibold leading-tight">
+              Discover Local Creativity
+            </h1>
             <p className="mt-4 text-muted-foreground max-w-prose">
-              Shop unique handmade art, crafts, paintings, and custom creative products from local sellers. Support artists near you with every purchase.
+              Shop unique handmade art, crafts, paintings, and custom creative
+              products from local sellers. Support artists near you with every
+              purchase.
             </p>
             <div className="mt-6 flex flex-wrap gap-2">
               <CategoryPill to="/products?category=all" label="All" />
@@ -41,17 +45,27 @@ export default function Index() {
               <CategoryPill to="/products?q=diy" label="DIY" />
             </div>
             <div className="mt-6 flex items-center gap-3">
-              <Link to="/products" className="rounded-full bg-foreground text-background px-5 py-2.5 text-sm font-medium">
+              <Link
+                to="/products"
+                className="rounded-full bg-foreground text-background px-5 py-2.5 text-sm font-medium"
+              >
                 Explore Products
               </Link>
-              <Link to="/wishlist" className="text-sm underline underline-offset-4">
+              <Link
+                to="/wishlist"
+                className="text-sm underline underline-offset-4"
+              >
                 View Wishlist
               </Link>
             </div>
           </div>
           <div className="relative">
             <div className="aspect-[4/3] rounded-3xl bg-gradient-to-br from-primary/40 via-secondary/50 to-accent/40 shadow-[var(--shadow-soft)]"></div>
-            <img src="/placeholder.svg" alt="Artistic collage" className="absolute inset-0 m-auto h-24 opacity-50" />
+            <img
+              src="/placeholder.svg"
+              alt="Artistic collage"
+              className="absolute inset-0 m-auto h-24 opacity-50"
+            />
           </div>
         </div>
       </section>
@@ -70,8 +84,12 @@ export default function Index() {
 
       <section className="container mx-auto px-4 py-12">
         <div className="flex items-end justify-between mb-4">
-          <h2 className="text-xl md:text-2xl font-semibold">Featured Sellers</h2>
-          <Link to="/sellers" className="text-sm underline underline-offset-4">View all</Link>
+          <h2 className="text-xl md:text-2xl font-semibold">
+            Featured Sellers
+          </h2>
+          <Link to="/sellers" className="text-sm underline underline-offset-4">
+            View all
+          </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {sellers.map((s) => (
@@ -83,19 +101,33 @@ export default function Index() {
   );
 }
 
-function HomeSection({ title, children }: { title: string; children: React.ReactNode }) {
+function HomeSection({
+  title,
+  children,
+}: {
+  title: string;
+  children: React.ReactNode;
+}) {
   return (
     <section className="container mx-auto px-4 py-8">
       <div className="flex items-end justify-between mb-4">
         <h2 className="text-xl md:text-2xl font-semibold">{title}</h2>
-        <Link to="/products" className="text-sm underline underline-offset-4">View all</Link>
+        <Link to="/products" className="text-sm underline underline-offset-4">
+          View all
+        </Link>
       </div>
       {children}
     </section>
   );
 }
 
-function ProductGrid({ loading, products }: { loading: boolean; products: any[] }) {
+function ProductGrid({
+  loading,
+  products,
+}: {
+  loading: boolean;
+  products: any[];
+}) {
   if (loading) {
     return (
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -112,7 +144,12 @@ function ProductGrid({ loading, products }: { loading: boolean; products: any[] 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
         {rows.map((p, idx) => {
           if (!p || typeof p !== "object") {
-            return <div key={`placeholder-${idx}`} className="rounded-xl bg-muted/60 h-64" />;
+            return (
+              <div
+                key={`placeholder-${idx}`}
+                className="rounded-xl bg-muted/60 h-64"
+              />
+            );
           }
           const id = (p as any)._id ?? `prod-${idx}`;
           return <ProductCard key={`${id}-${idx}`} product={p as any} />;

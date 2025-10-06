@@ -34,7 +34,9 @@ export function filterProducts(
   if (opts.q) {
     const q = opts.q.toLowerCase();
     list = list.filter((p) =>
-      [p.name, p.description, p.category].some((v) => v?.toLowerCase().includes(q)),
+      [p.name, p.description, p.category].some((v) =>
+        v?.toLowerCase().includes(q),
+      ),
     );
   }
 

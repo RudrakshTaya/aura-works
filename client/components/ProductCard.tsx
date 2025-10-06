@@ -24,7 +24,10 @@ export default function ProductCard({ product }: { product: Product }) {
 
   return (
     <div className="group rounded-xl bg-card shadow-[var(--shadow-soft)] ring-1 ring-border/60 overflow-hidden hover:shadow-xl transition-shadow">
-      <Link to={`/product/${safeId}`} className="block aspect-square bg-muted/60 overflow-hidden">
+      <Link
+        to={`/product/${safeId}`}
+        className="block aspect-square bg-muted/60 overflow-hidden"
+      >
         <img
           src={image}
           alt={title}
@@ -33,12 +36,17 @@ export default function ProductCard({ product }: { product: Product }) {
         />
       </Link>
       <div className="p-4">
-        <Link to={`/product/${safeId}`} className="line-clamp-2 font-medium hover:underline">
+        <Link
+          to={`/product/${safeId}`}
+          className="line-clamp-2 font-medium hover:underline"
+        >
           {title}
         </Link>
         <div className="mt-2 flex items-center justify-between">
           <div className="text-lg font-semibold">${price.toFixed(2)}</div>
-          <div className="text-xs text-muted-foreground">⭐ {rating.toFixed(1)}</div>
+          <div className="text-xs text-muted-foreground">
+            ⭐ {rating.toFixed(1)}
+          </div>
         </div>
         <div className="mt-3 flex items-center gap-2">
           <button
