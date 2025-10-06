@@ -20,19 +20,29 @@ export const WishlistProvider = ({
   const [ids, setIds] = useState<number[]>([]);
 
   useEffect(() => {
+    let mounted = true;
     async function fetchWishlist() {
       try {
         if (!getToken()) {
-          setIds([]);
+          if (mounted) setIds([]);
           return;
         }
         const list = await getWishlist();
-        setIds(Array.isArray(list) ? list : []);
+        if (mounted) setIds(Array.isArray(list) ? list : []);
       } catch {
-        setIds([]);
+        if (mounted) setIds([]);
       }
     }
     fetchWishlist();
+
+    const onAuth = () => {
+      fetchWishlist();
+    };
+    window.addEventListener("auth_change", onAuth);
+    return () => {
+      mounted = false;
+      window.removeEventListener("auth_change", onAuth);
+    };
   }, []);
 
   const toggle = async (productId: number | string) => {
