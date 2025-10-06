@@ -5,9 +5,9 @@ import { getFeaturedSellers } from "@/api/sellers";
 import SellerCard from "@/components/SellerCard";
 import ProductCard from "@/components/ProductCard";
 
-function assignSellerId(productId: number, sellerIds: string[]) {
-  const i = productId % sellerIds.length;
-  return sellerIds[i];
+function assignSellerId(productId: string, sellerIds: string[]) {
+  const hash = Array.from(productId).reduce((acc, c) => acc + c.charCodeAt(0), 0);
+  return sellerIds[hash % sellerIds.length];
 }
 
 export default function SellerShop() {
@@ -17,7 +17,7 @@ export default function SellerShop() {
 
   const seller = sellers.find((s) => s.id === id) || sellers[0];
   const sellerIds = sellers.map((s) => s.id);
-  const list = products.filter((p) => assignSellerId(p.id, sellerIds) === seller.id);
+  const list = products.filter((p) => assignSellerId(p._id, sellerIds) === seller.id);
 
   if (!seller) return <div className="container mx-auto px-4 py-10">Seller not found.</div>;
 
@@ -38,7 +38,7 @@ export default function SellerShop() {
 
       <h2 className="mt-8 text-xl md:text-2xl font-semibold">Products</h2>
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
-        {list.map((p)=> (<ProductCard key={p.id} product={p} />))}
+        {list.map((p)=> (<ProductCard key={p._id} product={p} />))}
       </div>
 
       <h2 className="mt-10 text-xl md:text-2xl font-semibold">About the Seller</h2>
