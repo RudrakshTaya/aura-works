@@ -6,13 +6,17 @@ const API_BASE = `/users/cart`;
 // Get current cart
 export async function getCart(): Promise<Cart> {
   try {
-    const { data } = await http.get<Cart>(`${API_BASE}`);
-    return data as unknown as Cart;
+    const { data } = await http.get(`${API_BASE}`);
+    console.log("Fetched cart data:", data);
+
+    // FIX: return proper structure
+    return { items: data.data } as Cart;
   } catch (err) {
     console.error("Error fetching cart:", err);
     return { items: [] };
   }
 }
+
 
 // Add item to cart
 export async function addToCart(
