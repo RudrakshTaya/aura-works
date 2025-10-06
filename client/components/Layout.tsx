@@ -95,21 +95,42 @@ function SiteFooter() {
 function UserActions() {
   const { user, logout } = useAuth();
   const { count } = useCart();
+  const [open, setOpen] = useState(false);
+
+  const firstName = user?.name?.split(" ")[0] ?? "User";
+
   return (
-    <div className="flex items-center gap-3 ml-2">
+    <div className="flex items-center gap-3 ml-2 relative">
       <Link to="/cart" className="relative inline-flex items-center text-sm">
         <span>Cart</span>
         {count > 0 && (
           <span aria-label={`Cart items: ${count}`} className="ml-1 inline-flex items-center justify-center min-w-[1.25rem] h-5 rounded-full bg-foreground text-background text-[10px] px-1.5">{count}</span>
         )}
       </Link>
+
       {user ? (
-        <div className="flex items-center gap-2">
-          <Link to="/profile" className="inline-flex items-center gap-2 text-sm">
-            {user.avatar && <img src={user.avatar} alt={user.name} className="h-6 w-6 rounded-full" />}
-            {/* <span>{user.name.split(" ")[0]}</span> */}
-          </Link>
-          <button onClick={logout} className="text-xs underline underline-offset-4">Logout</button>
+        <div className="flex items-center gap-2 relative">
+          <button onClick={() => setOpen((s) => !s)} className="inline-flex items-center gap-2 text-sm rounded-md px-2 py-1 hover:bg-muted/50">
+            {user.avatar ? (
+              <img src={user.avatar} alt={user.name} className="h-6 w-6 rounded-full" />
+            ) : (
+              <div className="h-6 w-6 rounded-full bg-muted flex items-center justify-center text-xs font-medium">{firstName.slice(0,1).toUpperCase()}</div>
+            )}
+            <span className="hidden sm:inline">{firstName}</span>
+          </button>
+
+          {open && (
+            <div className="absolute right-0 top-full mt-2 w-48 rounded-md bg-card ring-1 ring-border/60 shadow-md z-50">
+              <ul className="p-2 text-sm">
+                <li><Link to="/orders" onClick={() => setOpen(false)} className="block px-2 py-2 hover:bg-muted/60 rounded">Orders</Link></li>
+                <li><Link to="/wishlist" onClick={() => setOpen(false)} className="block px-2 py-2 hover:bg-muted/60 rounded">Wishlist</Link></li>
+                <li><Link to="/profile" onClick={() => setOpen(false)} className="block px-2 py-2 hover:bg-muted/60 rounded">Settings</Link></li>
+                <li>
+                  <button onClick={() => { setOpen(false); logout(); }} className="w-full text-left px-2 py-2 hover:bg-muted/60 rounded">Logout</button>
+                </li>
+              </ul>
+            </div>
+          )}
         </div>
       ) : (
         <Link to="/login" className="text-sm underline underline-offset-4">Login</Link>
