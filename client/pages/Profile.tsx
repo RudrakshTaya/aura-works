@@ -17,7 +17,7 @@ export default function ProfilePage() {
     queryKey: ["products"],
     queryFn: getAllProducts,
   });
-  const wishes = products.filter((p) => ids.includes(p.id));
+  const wishes = products.filter((p) => ids.includes(p._id));
   const { data: orders = [] } = useQuery({
     queryKey: ["orders"],
     queryFn: () => listOrders(getToken() || ""),
@@ -84,11 +84,11 @@ export default function ProfilePage() {
           {orders.length ? (
             orders.map((o) => (
               <div
-                key={o.id}
+                key={o._id}
                 className="rounded-xl bg-card ring-1 ring-border/60 p-4 flex items-center justify-between"
               >
                 <div>
-                  <div className="font-medium">Order #{o.id}</div>
+                  <div className="font-medium">Order #{o._id}</div>
                   <div className="text-xs text-muted-foreground">
                     {new Date(o.createdAt).toLocaleString()} · {o.items.length}{" "}
                     items
@@ -97,7 +97,7 @@ export default function ProfilePage() {
                 <div className="flex items-center gap-3">
                   <span className="text-sm">{o.status}</span>
                   <Link
-                    to={`/order/${o.id}`}
+                    to={`/order/${o._id}`}
                     className="text-sm underline underline-offset-4"
                   >
                     Track
@@ -115,23 +115,23 @@ export default function ProfilePage() {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
           {wishes.map((p) => (
             <div
-              key={p.id}
+              key={p._id}
               className="rounded-xl bg-card ring-1 ring-border/60 p-3"
             >
               <Link
-                to={`/product/${p.id}`}
+                to={`/product/${p._id}`}
                 className="block aspect-square bg-muted/60 rounded-md overflow-hidden"
               >
                 <img
                   src={p.image}
-                  alt={p.title}
+                  alt={p.name}
                   className="w-full h-full object-contain p-4"
                 />
               </Link>
               <div className="mt-2 flex items-center justify-between">
-                <div className="line-clamp-1 text-sm">{p.title}</div>
+                <div className="line-clamp-1 text-sm">{p.name}</div>
                 <button
-                  onClick={() => toggle(p.id)}
+                  onClick={() => toggle(parseInt(p._id))}
                   className="text-sm underline"
                 >
                   Remove

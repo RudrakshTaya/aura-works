@@ -56,12 +56,12 @@ export default function ProductDetail() {
       <div className="rounded-2xl bg-card ring-1 ring-border/60 p-6">
         <img
           src={data.image}
-          alt={data.title}
+          alt={data.name}
           className="w-full h-auto object-contain"
         />
       </div>
       <div>
-        <h1 className="text-2xl md:text-3xl font-semibold">{data.title}</h1>
+        <h1 className="text-2xl md:text-3xl font-semibold">{data.name}</h1>
         <div className="mt-2 text-lg font-semibold">
           ${data.price.toFixed(2)}
         </div>

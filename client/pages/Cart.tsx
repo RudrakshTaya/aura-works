@@ -8,7 +8,7 @@ export default function CartPage() {
   const navigate = useNavigate();
   const { data: products = [] } = useQuery({ queryKey: ["products"], queryFn: getAllProducts });
 
-  const map = new Map(products.map((p) => [p.id, p]));
+  const map = new Map(products.map((p) => [p._id, p]));
   const detailed = items.map((i) => ({ ...i, product: map.get(i.productId)! })).filter((i) => i.product);
   const subtotal = detailed.reduce((a, i) => a + i.product.price * i.quantity, 0);
 
@@ -22,9 +22,9 @@ export default function CartPage() {
           <div className="space-y-4">
             {detailed.map((i) => (
               <div key={i.productId} className="flex items-center gap-4 rounded-xl bg-card ring-1 ring-border/60 p-4">
-                <img src={i.product.image} alt={i.product.title} className="h-20 w-20 object-contain bg-muted/60 rounded-md" />
+                <img src={i.product.image} alt={i.product.name} className="h-20 w-20 object-contain bg-muted/60 rounded-md" />
                 <div className="min-w-0 flex-1">
-                  <div className="font-medium line-clamp-1">{i.product.title}</div>
+                  <div className="font-medium line-clamp-1">{i.product.name}</div>
                   <div className="text-sm text-muted-foreground">${i.product.price.toFixed(2)}</div>
                   <div className="mt-2 flex items-center gap-2">
                     <label className="text-xs text-muted-foreground">Qty</label>

@@ -35,7 +35,7 @@ export function filterProducts(
   if (opts.q) {
     const q = opts.q.toLowerCase();
     list = list.filter((p) =>
-      [p.title, p.description, p.category].some((v) =>
+      [p.name, p.description, p.category].some((v) =>
         v?.toLowerCase().includes(q),
       ),
     );
@@ -70,7 +70,7 @@ export function filterProducts(
       list.sort((a, b) => (b.rating?.count ?? 0) - (a.rating?.count ?? 0));
       break;
     case "newest":
-      list.sort((a, b) => b.id - a.id);
+      list.sort((a, b) => b._id.localeCompare(a._id));
       break;
   }
 
@@ -87,7 +87,7 @@ export function getSuggestions(
   const seen = new Set<string>();
   const suggestions: string[] = [];
   for (const p of products) {
-    const terms = [p.title, p.category];
+    const terms = [p.name, p.category];
     for (const t of terms) {
       if (!t) continue;
       if (t.toLowerCase().includes(lower) && !seen.has(t)) {

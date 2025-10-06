@@ -20,7 +20,7 @@ export default function Index() {
   const trending = [...products]
     .sort((a, b) => (b.rating?.count ?? 0) - (a.rating?.count ?? 0))
     .slice(0, 8);
-  const newest = [...products].sort((a, b) => b.id - a.id).slice(0, 8);
+  const newest = [...products].sort((a, b) => Number(b._id) - Number(a._id)).slice(0, 8);
 
   return (
     <div>
@@ -91,7 +91,7 @@ export default function Index() {
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {sellers.map((s) => (
-            <SellerCard key={s.id} seller={s} />
+            <SellerCard key={s._id} seller={s} />
           ))}
         </div>
       </section>

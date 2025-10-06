@@ -6,10 +6,10 @@ import { useWishlist } from "@/state/WishlistContext";
 export default function ProductCard({ product }: { product: Product }) {
   const { add } = useCart();
   const { ids, toggle } = useWishlist();
-  const wished = Array.isArray(ids) ? ids.includes(product?.id as any) : false;
-
-  const safeId = product?.id ?? "";
-  const title = product?.title ?? "Untitled";
+  const wished = Array.isArray(ids) ? ids.includes(product?._id as any) : false;
+console.log(product)
+  const safeId = product?._id ?? "";
+  const title = product?.name ?? "Untitled";
   const image = product?.image ?? "/placeholder.svg";
   const price =
     typeof product?.price === "number"

@@ -6,7 +6,7 @@ const API_BASE = `/users/cart`;
 // Get current cart
 export async function getCart(): Promise<Cart> {
   try {
-    const { data } = await http.get<Cart>(API_BASE);
+    const { data } = await http.get<Cart>(`${API_BASE}`);
     return data as unknown as Cart;
   } catch (err) {
     console.error("Error fetching cart:", err);

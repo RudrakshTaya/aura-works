@@ -4,8 +4,9 @@ export type Rating = {
 };
 
 export type Product = {
-  id: number;
-  title: string;
+  _id: string;
+  
+  name: string;
   price: number;
   description: string;
   category: string;
@@ -14,7 +15,7 @@ export type Product = {
 };
 
 export type Seller = {
-  id: string;
+  _id: string;
   name: string;
   avatar: string;
   rating: number;
@@ -23,7 +24,7 @@ export type Seller = {
 };
 
 export type User = {
-  id: string;
+  _id: string;
   name: string;
   email: string;
   avatar?: string;
@@ -32,7 +33,7 @@ export type User = {
 
 export type AuthCredentials = { email: string; password: string; };
 
-export type CartItem = { productId: number; quantity: number };
+export type CartItem = { productId: string; quantity: number };
 export type Cart = { items: CartItem[] };
 
 export type ShippingAddress = {
@@ -47,7 +48,7 @@ export type ShippingAddress = {
 export type OrderStatus = "Placed" | "Shipped" | "Delivered";
 
 export type Order = {
-  id: string;
+  _id: string;
   userId?: string;
   items: CartItem[];
   total: number;
