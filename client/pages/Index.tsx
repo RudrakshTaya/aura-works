@@ -15,12 +15,14 @@ export default function Index() {
     queryKey: ["sellers"],
     queryFn: getFeaturedSellers,
   });
-  console.log(products);
+
   const featured = products.slice(0, 8);
   const trending = [...products]
-    .sort((a, b) => (b.rating?.count ?? 0) - (a.rating?.count ?? 0))
+    .sort((a, b) => (b.ratings ?? 0) - (a.ratings ?? 0))
     .slice(0, 8);
-  const newest = [...products].sort((a, b) => Number(b._id) - Number(a._id)).slice(0, 8);
+  const newest = [...products]
+    .sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""))
+    .slice(0, 8);
 
   return (
     <div>
@@ -149,7 +151,7 @@ function ProductGrid({
               />
             );
           }
-          const id = (p as any).id ?? `prod-${idx}`;
+          const id = (p as any)._id ?? `prod-${idx}`;
           return <ProductCard key={`${id}-${idx}`} product={p as any} />;
         })}
       </div>

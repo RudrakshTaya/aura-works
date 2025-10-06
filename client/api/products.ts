@@ -3,16 +3,15 @@ import { http, unwrap } from "./http";
 
 export async function getAllProducts(): Promise<Product[]> {
   const res = await http.get(`/products`);
-  return unwrap<Product[]>(res);
+  return unwrap<Product[]>(res) ?? [];
 }
 
-export async function getProduct(id: number): Promise<Product> {
+export async function getProduct(id: string): Promise<Product> {
   const res = await http.get(`/products/${id}`);
   return unwrap<Product>(res);
 }
 
 export async function getCategories(): Promise<string[]> {
-  // Compute categories from products to avoid relying on a non-standard endpoint
   const products = await getAllProducts();
   const set = new Set<string>();
   for (const p of products) if (p.category) set.add(p.category);
@@ -30,7 +29,7 @@ export function filterProducts(
     sort?: "price_asc" | "price_desc" | "newest" | "popular";
   } = {},
 ): Product[] {
-  let list = [...products];
+  let list = [...(products || [])];
 
   if (opts.q) {
     const q = opts.q.toLowerCase();
@@ -54,9 +53,7 @@ export function filterProducts(
   }
 
   if (typeof opts.minRating === "number") {
-    list = list.filter(
-      (p) => (p.rating?.rate ?? 0) >= (opts.minRating as number),
-    );
+    list = list.filter((p) => (p.ratings ?? 0) >= (opts.minRating as number));
   }
 
   switch (opts.sort) {
@@ -67,10 +64,10 @@ export function filterProducts(
       list.sort((a, b) => b.price - a.price);
       break;
     case "popular":
-      list.sort((a, b) => (b.rating?.count ?? 0) - (a.rating?.count ?? 0));
+      list.sort((a, b) => (b.ratings ?? 0) - (a.ratings ?? 0));
       break;
     case "newest":
-      list.sort((a, b) => b._id.localeCompare(a._id));
+      list.sort((a, b) => (b.createdAt || "").localeCompare(a.createdAt || ""));
       break;
   }
 
@@ -86,7 +83,7 @@ export function getSuggestions(
   const lower = q.toLowerCase();
   const seen = new Set<string>();
   const suggestions: string[] = [];
-  for (const p of products) {
+  for (const p of products || []) {
     const terms = [p.name, p.category];
     for (const t of terms) {
       if (!t) continue;

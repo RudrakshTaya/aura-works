@@ -6,23 +6,17 @@ import { useWishlist } from "@/state/WishlistContext";
 export default function ProductCard({ product }: { product: Product }) {
   const { add } = useCart();
   const { ids, toggle } = useWishlist();
-  const wished = Array.isArray(ids) ? ids.includes(product?._id as any) : false;
-console.log(product)
   const safeId = product?._id ?? "";
   const title = product?.name ?? "Untitled";
-  const image = product?.image ?? "/placeholder.svg";
-  const price =
-    typeof product?.price === "number"
-      ? product.price
-      : Number(product?.price) || 0;
-  const rating = product?.rating?.rate ?? 4.5;
+  const image = product?.images?.[0] || "/placeholder.svg";
+  const price = typeof product?.price === "number" ? product.price : 0;
+  const rating = typeof product?.ratings === "number" ? product.ratings : 0;
+  const wished = Array.isArray(ids) ? ids.includes(String(safeId)) : false;
 
-  // Async handler for Add to Cart
   const handleAddToCart = async () => {
     try {
       if (!safeId) throw new Error("Invalid product id");
-      await add(safeId, 1, {});
-      console.log(`${title} added to cart`);
+      await add(String(safeId), 1, {});
     } catch (err) {
       console.error("Failed to add to cart:", err);
     }
@@ -50,7 +44,9 @@ console.log(product)
         </Link>
         <div className="mt-2 flex items-center justify-between">
           <div className="text-lg font-semibold">${price.toFixed(2)}</div>
-          <div className="text-xs text-muted-foreground">⭐ {rating}</div>
+          <div className="text-xs text-muted-foreground">
+            ⭐ {rating.toFixed(1)}
+          </div>
         </div>
         <div className="mt-3 flex items-center gap-2">
           <button
@@ -61,7 +57,7 @@ console.log(product)
           </button>
           <button
             aria-label="Wishlist"
-            onClick={() => toggle(safeId as any)}
+            onClick={() => toggle(String(safeId))}
             className={`rounded-full px-3 py-2 bg-secondary hover:bg-secondary/80 ${wished ? "text-red-500" : "text-foreground/80"}`}
           >
             {wished ? "♥" : "♡"}

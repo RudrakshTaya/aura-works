@@ -5,31 +5,22 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function CartPage() {
   const { items, update, remove, clear } = useCart();
-  console.log("Cart items:", items);
-
   const navigate = useNavigate();
 
-  // Fetch all products (so we can attach full product data)
   const { data: products = [] } = useQuery({
     queryKey: ["products"],
     queryFn: getAllProducts,
   });
 
-  // Create a product lookup map
   const productMap = new Map(products.map((p) => [p._id, p]));
 
-  // Merge cart items with product details
   const detailed = items
-    .map((item) => ({
-      ...item,
-      product: productMap.get(item.productId),
-    }))
-    .filter((i) => i.product); // Remove items whose product no longer exists
+    .map((item) => ({ ...item, product: productMap.get(item.productId) }))
+    .filter((i) => i.product);
 
-  // Calculate subtotal
   const subtotal = detailed.reduce(
     (acc, i) => acc + i.product.price * i.quantity,
-    0
+    0,
   );
 
   return (
@@ -46,7 +37,6 @@ export default function CartPage() {
         </div>
       ) : (
         <div className="mt-6 grid gap-6 lg:grid-cols-[1fr,360px]">
-          {/* Left section: Cart items */}
           <div className="space-y-4">
             {detailed.map((i) => (
               <div
@@ -55,7 +45,7 @@ export default function CartPage() {
               >
                 <img
                   src={
-                    i.product.image?.[0] ||
+                    i.product.images?.[0] ||
                     "https://via.placeholder.com/80?text=No+Image"
                   }
                   alt={i.product.name}
@@ -79,7 +69,7 @@ export default function CartPage() {
                       onChange={(e) =>
                         update(
                           i.productId,
-                          Math.max(1, Number(e.target.value) || 1)
+                          Math.max(1, Number(e.target.value) || 1),
                         )
                       }
                       className="w-16 rounded-md bg-muted/60 px-2 py-1"
@@ -100,7 +90,6 @@ export default function CartPage() {
             ))}
           </div>
 
-          {/* Right section: Order summary */}
           <aside className="rounded-xl bg-card ring-1 ring-border/60 p-4 h-fit">
             <div className="font-medium">Order Summary</div>
 

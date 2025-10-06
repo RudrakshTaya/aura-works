@@ -1,17 +1,33 @@
-export type Rating = {
-  rate: number;
-  count: number;
+export type Review = {
+  userId: string;
+  comment: string;
+  rating: number; // 1-5
+  createdAt: string;
+};
+
+export type Attributes = {
+  color?: string[];
+  size?: string[];
+  material?: string;
 };
 
 export type Product = {
   _id: string;
-  
+  sellerId?: string;
   name: string;
+  description?: string;
+  category?: string;
+  subCategory?: string;
+  attributes?: Attributes;
   price: number;
-  description: string;
-  category: string;
-  image: string;
-  rating?: Rating;
+  discount?: number;
+  stock: number;
+  images: string[];
+  tags?: string[];
+  ratings?: number; // aggregate average rating
+  reviews?: Review[];
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type Seller = {
@@ -28,31 +44,44 @@ export type User = {
   name: string;
   email: string;
   avatar?: string;
-  savedSellerIds?: string[];
+  addresses?: ShippingAddress[];
+  wishlist?: string[];
 };
 
-export type AuthCredentials = { email: string; password: string; };
+export type AuthCredentials = { email: string; password: string };
 
-export type CartItem = { productId: string; quantity: number };
+export type CartItem = {
+  productId: string;
+  quantity: number;
+  selectedAttributes?: Record<string, any>;
+};
 export type Cart = { items: CartItem[] };
 
+// Backend shipping address shape
 export type ShippingAddress = {
-  fullName: string;
-  address: string;
+  name: string;
+  phone: string;
+  addressLine1: string;
   city: string;
   state: string;
   postalCode: string;
   country: string;
 };
 
-export type OrderStatus = "Placed" | "Shipped" | "Delivered";
+export type OrderStatus =
+  | "Pending"
+  | "Processing"
+  | "Shipped"
+  | "Delivered"
+  | "Cancelled";
 
 export type Order = {
   _id: string;
   userId?: string;
-  items: CartItem[];
-  total: number;
+  items: (CartItem & { sellerId?: string; priceAtPurchase?: number })[];
+  totalAmount: number;
   status: OrderStatus;
-  createdAt: string;
-  shipping: ShippingAddress;
+  orderedAt: string;
+  updatedAt?: string;
+  shippingAddress: ShippingAddress;
 };

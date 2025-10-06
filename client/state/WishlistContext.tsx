@@ -3,8 +3,8 @@ import { addToWishlist, removeFromWishlist, getWishlist } from "@/api/wishlist";
 import { getToken } from "@/api/auth";
 
 type WishlistContextType = {
-  ids: number[];
-  toggle: (id: number | string) => Promise<void>;
+  ids: string[];
+  toggle: (id: string) => Promise<void>;
 };
 
 const WishlistContext = createContext<WishlistContextType>({
@@ -17,7 +17,7 @@ export const WishlistProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [ids, setIds] = useState<number[]>([]);
+  const [ids, setIds] = useState<string[]>([]);
 
   useEffect(() => {
     let mounted = true;
@@ -28,7 +28,7 @@ export const WishlistProvider = ({
           return;
         }
         const list = await getWishlist();
-        if (mounted) setIds(Array.isArray(list) ? list : []);
+        if (mounted) setIds(Array.isArray(list) ? list.map(String) : []);
       } catch {
         if (mounted) setIds([]);
       }
@@ -45,11 +45,10 @@ export const WishlistProvider = ({
     };
   }, []);
 
-  const toggle = async (productId: number | string) => {
+  const toggle = async (productId: string) => {
     try {
       if (!getToken()) return;
-      const id = typeof productId === "string" ? Number(productId) : productId;
-      if (!Number.isFinite(id)) return;
+      const id = String(productId);
       if (ids.includes(id)) {
         await removeFromWishlist(id);
         setIds((prev) => prev.filter((i) => i !== id));
