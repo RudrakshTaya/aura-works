@@ -25,22 +25,30 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async login(email, password) {
         const { user: u } = await Auth.login({ email, password });
         setUser(u);
-        try { window.dispatchEvent(new Event("auth_change")); } catch {};
+        try {
+          window.dispatchEvent(new Event("auth_change"));
+        } catch {}
       },
       async signup(name, email, password) {
         const { user: u } = await Auth.signup({ name, email, password });
         setUser(u);
-        try { window.dispatchEvent(new Event("auth_change")); } catch {};
+        try {
+          window.dispatchEvent(new Event("auth_change"));
+        } catch {}
       },
       logout() {
         Auth.logout();
         setUser(null);
-        try { window.dispatchEvent(new Event("auth_change")); } catch {};
+        try {
+          window.dispatchEvent(new Event("auth_change"));
+        } catch {}
       },
       update(patch) {
         const u = Auth.updateProfile(patch);
         setUser(u);
-        try { window.dispatchEvent(new Event("auth_change")); } catch {};
+        try {
+          window.dispatchEvent(new Event("auth_change"));
+        } catch {}
       },
     }),
     [user],
