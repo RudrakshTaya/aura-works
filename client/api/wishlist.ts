@@ -1,5 +1,7 @@
 import { http, unwrap } from "./http";
 
+import { http, unwrap } from "./http";
+
 // Get user's wishlist
 export async function getWishlist(): Promise<number[]> {
   const res = await http.get(`/users/wishlist`);
