@@ -39,8 +39,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
     }
     fetchCart();
+
+    const onAuth = () => {
+      fetchCart();
+    };
+    window.addEventListener("auth_change", onAuth);
+
     return () => {
       mounted = false;
+      window.removeEventListener("auth_change", onAuth);
     };
   }, []);
 
